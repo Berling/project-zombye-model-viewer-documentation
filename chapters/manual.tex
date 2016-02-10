@@ -1,0 +1,43 @@
+\chapter{Bedienung}
+\section{Plugin Installieren}
+Das Plugin wurde mit der Blender Version 2.75a getestet. Folgende Schritte sind zur Installation des Plugins notwendig:
+
+\begin{enumerate}
+    \item Blender starten
+    \item File $\rightarrow$ User-Preferences $\rightarrow$ Add-ons $\rightarrow$ Install from File
+    \item project-zombye-exporter.zip im Projekt Ordner auswählen
+    \item Install from File
+    \item Haken setzen (Import-Export: Zombye Model Exporter)
+    \item Save User Settings
+\end{enumerate}
+
+Nach der Installation befindet sich das Plugin unter File $\rightarrow$ Export $\rightarrow$ Zombye Model (.zmdl). Im Ordner \texttt{example-models} befinden sich zwei blend-Dateien, ein statisches Objekt und ein animiertes Objekt, die mit dem Plugin exportiert werden können.
+
+Das Plugin bietet die Möglichkeit nur die ausgewählten Objekte in einer Scene zu exportieren. Dazu muss die Option \texttt{selected} gesetzt werden.
+
+\section{Kompilierung}
+Dem Plugin liegt auch noch ein Model-Viewer bei, mit dessen Hilfe die exportierten Dateien betrachtet werden können.
+
+Die Kompilierung unter Windows wurde mit dem in der MinGW Distribution TDM (Version 5.1) enthaltenen GCC getestet. Folgender Schritte sind zur Kompilierung nötig. Es wird angenommen, dass der Pfad zu Premake in \texttt{PATH} eingetragen ist. Sollte dies nicht der fall sein, muss der vollständige Pfad zu Premake beim aufrufen angegeben werden.
+
+\begin{enumerate}
+    \item MinGW Konsole öfnnen
+    \item Ins Verzeichnis \texttt{project-zombye-model-viewer} wechseln
+    \item premake5 gmake
+    \item mingw32-make.exe -j 4 CC=gcc CXX=g++
+\end{enumerate}
+
+Vor dem Start müssen die ZMDL-Dateien noch in das binäre Format der Project-Zombye-Engine gebracht werden. Die geschieht mit dem Meshconverter bzw. Animationconverter.
+
+\begin{enumerate}
+    \item mesh\_converter\textbackslash{}mesh\_converter.exe path\textbackslash{}human.zmdl assets/
+    \item animation\_converter\textbackslash{}animation\_converter.exe path\textbackslash{}human.zmdl assets/
+    \item build\textbackslash{}zmdl\_viewer.exe assets\textbackslash{}meshes\textbackslash{}human.msh assets\textbackslash{}anims\textbackslash{}human.skl
+\end{enumerate}
+
+\begin{enumerate}
+    \item mesh\_converter\textbackslash{}mesh\_converter.exe path\textbackslash{}weighted\_companion\_cube\_export.zmdl assets/
+    \item build\textbackslash{}zmdl\_viewer.exe assets\textbackslash{}meshes\textbackslash{}cube.msh
+\end{enumerate}
+
+Der Viewer verwendet die Arc-Ball Klasse aus der Tool- und Pluginprogrammierungs Übung. Die Steuerung der Kamera ist genau so über die Maus steuerbar. Wird im Viewer ein animiertes Model geladen, kann zwischen den Animationen mit Rechts bzw. Links hin und her gewechselt werden. Das Starten und Stoppen der Aimation ist mit der Leer-Taste möglich.

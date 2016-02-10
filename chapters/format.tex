@@ -1,0 +1,57 @@
+\chapter{Aufbau des Formats}
+Im Folgenden wird der Aufbau des \textit{Zombye Model Formats} (kurz zmdl) besprochen, welches für \textit{Project Zombye} Engine entwickelt wurde.
+
+ZMDL ist ein Json-basiertes Modell-Format und wurde genau auf die Anforderungen der Engine zugeschnitten. Neben gewöhnlicher 3D-Geometrie werden auch Skelett-basierte Animationen unterstützt. Je nachdem, ob es sich bei dem Modell um statische Geometrie oder animierte Geometrie handelt, unterscheidet sich der Aufbau der einzelnen Datenstrukturen innerhalb des Formats.
+
+\section{Aufbau statische Geometrie}
+Das Format kann zwischen mehreren Objekten unterscheiden die über einen Namen mit ihren jeweiligen Daten asoziiert werden. Jedes Objekt besteht aus einer Liste von Vertices, einer Liste von Submeshes und einem Flag ob Parallax-Displacement-Mapping verwendet werden soll.
+
+Die Vertices werden abgekapselt als eine Menge von Vertexattributen gespeichert. Dabei besteht jedes Vertex aus einer Position, einer Normalen und einer Texturkoordinate. Position und Normale sind aus jeweils drei-elmentigen Listen zusammengesetzt die Vektoren im $\mathbb{R}^3$ darstellen. Die Texturkoordinate hingegen ist eine zwei-elementige Liste, also ein Vektor im $\mathbb{R}^2$.
+
+Die Submeshes sind eine Menge von Materialnamen die mit einem Submesh asoziiert werden. Ein Submesh ist eine Teilmenge der gesamten Indexmenge, gruppiert nach Material. Das bedeutet ein Submesh enthält alle Dreiecke die das gleiche Material teilen. Jedes Submesh besteht aus einer Liste an Indices, deren Elemente wiederum in Gruppen mit jeweils drei Elementen zusammengefasst sind (Triangles). Zudem enthält jedes Submesh drei Texturen und deren Pfad (\texttt{diffuse}, \texttt{material}, \texttt{normal}).
+
+Im folgenden Beispiel wird ein einziges Dreieck im ZMDL-Format dargestellt.
+\vspace{3cm}
+
+\begin{lstlisting}
+    {
+        "triangle" : {
+            "vertices" : [
+                {
+                    "position" : [-0.5, -0.5, 0.0],
+                    "texcoord" : [0.0, 0.0],
+                    "normal" : [0.0, 1.0, 0.0]
+                },
+                {
+                    "position" : [0.5, -0.5, 0.0],
+                    "texcoord" : [1.0, 0.0],
+                    "normal" : [0.0, 1.0, 0.0]
+                },
+                {
+                    "position" : [0.0, 0.5, 0.0],
+                    "texcoord" : [0.5, 0.5],
+                    "normal" : [0.0, 1.0, 0.0]
+                }
+            ],
+            "submeshes" : {
+                "material" : {
+                    "indicies" : [
+                        [0, 1, 2]
+                    ],
+                    "textures" : {
+                        "diffuse" : "path/diffuse.dds",
+                        "material" : "path/material.dds",
+                        "normal" : "path/normal.dds"
+                    }
+                }
+            },
+            "parallax" : false
+        }
+    }
+\end{lstlisting}
+
+\section{Aufbau animierter Geometrie}
+Alle bisher genannten Daten sind wie beschrieben auch in animierter Geometrie vorhanden, werden allerdings teilweise erweitert.
+So gibt es zwei neue Vertex-Attribute, \texttt{indices} und \texttt{weights}, die in jedem Vertex vorhanden sind. Die Indices sind die der Bones die das Vertex beeinflussen. Die Weights geben an wie stark der Bone den Vertex transformiert. Jedem Vertex können bis zu vier Bones gleichzeitig zugewiesen werden.
+
+Jedes animierte Objekt besitzt zwei zusätzliche Datensätze. Zum Einen die Bonehierchie, die aus einer Zuordnung zwischen Parent- und Child-Bone besteht. Ein Parent kann mehrere oder keine Children haben. Zum Anderen die Liste der Animationen. Diese sind einem Namen zugeordnet und bestehen aus einer Liste an sog. Tracks. Diese repräsentieren jeweils einen Bone. Jeder Track enthält sämtliche Keyframes für diesen Bone innerhalb der Animation. Die Keyframes sind unterteilt nach Translation, Rotation und Skalierung.

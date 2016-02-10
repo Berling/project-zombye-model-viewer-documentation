@@ -1,0 +1,6 @@
+\chapter{Implementierung des Export-Plugins}
+Das Export-Plugin wurde für Blender geschrieben. Plugins in Blender werden vorrangig in Python geschrieben und als Python Module realisiert. Die Grundlegende Herangehensweise bei der Implementierung war zunächst API-Dokumentation nach den benötigten Informationen durchsuchen, die Daten in Python anfordern, alle Daten in einem großen Dictionary sammeln und diese anschließend in eine Datei schreiben.
+
+Dafür bot sich JSON als Basis an, da Python bereits einen JSON-Parser bzw. Dumper mit sich bringt und alle Datenstrukturen aus JSON auf Äquivalente in Python umgesetzt werden können. Schon zu Begin der Entwicklung wurde festgestellt, dass die Dokumentation der Blender API sehr unvolständig und teilweise auch veraltet ist \footnote{An einigen Stellen in der Dokumentation werden Funktionen mit \textit{blabla} dokumentiert}. Wenig hilfreich war auch die Inkonsistenz der API. Oft war Try and Error der bevorzugte Ansatz, da weder die Dokumentation noch einschlägige Beiträge in Foren Abhilfe schafften.
+
+In der Retrospektive war der Aufwand im Verhältnis zum Nutzen des Plugins sehr hoch. Die aktuelle Version des Plugins unterstützt keine IK-Solver oder ähnliches. Es können also nur die Keyframes des tatsächlichen Skelets exportiert werden.
